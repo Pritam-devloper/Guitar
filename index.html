@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitart</title>
+    <style>
+        body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        color: white;
+    }
+    
+    .container {
+        width: 100%;
+        max-width: 800px;
+    }
+    
+    header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.8;
+    }
+    
+    .guitar {
+        position: relative;
+        width: 100%;
+        min-height: 300px;
+        background: url('/api/placeholder/800/400') no-repeat center center;
+        background-size: contain;
+        margin: 20px 0;
+    }
+    
+    .guitar-neck {
+        position: relative;
+        width: 100%;
+        height: 350px;
+        background: linear-gradient(90deg, #8B4513, #A0522D);
+        border-radius: 5px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px 0;
+    }
+    
+    .string {
+        position: relative;
+        width: 100%;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .string:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .string-line {
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, #d1d1d1, #f8f8f8, #d1d1d1);
+        position: relative;
+    }
+    
+    .string:nth-child(1) .string-line {
+        height: 1px;
+    }
+    
+    .string:nth-child(2) .string-line {
+        height: 1.5px;
+    }
+    
+    .string:nth-child(3) .string-line {
+        height: 2px;
+    }
+    
+    .string:nth-child(4) .string-line {
+        height: 2.5px;
+    }
+    
+    .string:nth-child(5) .string-line {
+        height: 3px;
+    }
+    
+    .string:nth-child(6) .string-line {
+        height: 3.5px;
+    }
+    
+    .frets {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 20px;
+        pointer-events: none;
+    }
+    
+    .fret {
+        width: 5px;
+        height: 100%;
+        background: linear-gradient(to right, #999, #fff, #999);
+        border-radius: 2px;
+    }
+    
+    .note-markers {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+        padding: 0 20px;
+        pointer-events: none;
+    }
+    
+    .marker {
+        width: 20px;
+        height: 20px;
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+    }
+    
+    .string-labels {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 86%;
+    }
+    
+    .string-label {
+        width: 30px;
+        height: 30px;
+        background-color: #f8f8f8;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #333;
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .controls {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .control-button {
+        padding: 10px 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 30px;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .control-button:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+    }
+    
+    .control-button.active {
+        background-color: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .info-panel {
+        background-color: rgba(0, 0, 0, 0.2);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        text-align: center;
+    }
+    
+    .current-note {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    
+    .note-info {
+        font-size: 1.2rem;
+        opacity: 0.8;
+    }
+    
+    .hint {
+        text-align: center;
+        margin-top: 20px;
+        font-style: italic;
+        opacity: 0.7;
+    }
+    
+    footer {
+        margin-top: 30px;
+        text-align: center;
+        opacity: 0.6;
+        font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+        h1 {
+            font-size: 2rem;
+        }
+        
+        .guitar-neck {
+            height: 300px;
+        }
+        
+        .string-label {
+            width: 24px;
+            height: 24px;
+            font-size: 0.8rem;
+        }
+    }
+    
+    /* Animation for string plucking */
+    @keyframes pluck {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(8px); }
+        100% { transform: translateY(0); }
+    }
+    
+    .plucked {
+        animation: pluck 0.3s ease;
+    }
+</style>
+</head>
+<body>
+    <div class="guitar-neck">
+        <div class="string" data-note="E" data-string="1">
+            <div class="string-line"></div>
+        </div>
+        <div class="string" data-note="B" data-string="2">
+            <div class="string-line"></div>
+        </div>
+        <div class="string" data-note="G" data-string="3">
+            <div class="string-line"></div>
+        </div>
+        <div class="string" data-note="D" data-string="4">
+            <div class="string-line"></div>
+        </div>
+        <div class="string" data-note="A" data-string="5">
+            <div class="string-line"></div>
+        </div>
+        <div class="string" data-note="E" data-string="6">
+            <div class="string-line"></div>
+        </div>
+        
+        <div class="frets">
+            <div class="fret"></div>
+            <div class="fret"></div>
+            <div class="fret"></div>
+            <div class="fret"></div>
+            <div class="fret"></div>
+        </div>
+        
+        <div class="string-labels">
+            <div class="string-label">E</div>
+            <div class="string-label">B</div>
+            <div class="string-label">G</div>
+            <div class="string-label">D</div>
+            <div class="string-label">A</div>
+            <div class="string-label">E</div>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <button class="control-button" id="standard-tuning">Standard Tuning</button>
+        <button class="control-button" id="drop-d-tuning">Drop D Tuning</button>
+        <button class="control-button" id="open-g-tuning">Open G Tuning</button>
+        <button class="control-button" id="show-chords">Show Chord Helper</button>
+    </div>
+    
+    <div class="info-panel">
+        <div class="current-note">Play a note</div>
+        <div class="note-info">Click on a string to hear its sound</div>
+    </div>
+    
+    <p class="hint">Try different tunings using the buttons above!</p>
+    
+    <footer>
+        &copy; 2025 Guitar Note Simulator
+    </footer>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Audio context setup
+        let audioContext;
+        let currentString = null;
+        let currentTuning = 'standard';
+        
+        // Standard tuning frequencies (E, B, G, D, A, E from high to low)
+        const TUNINGS = {
+            standard: [329.63, 246.94, 196.00, 146.83, 110.00, 82.41],
+            dropD: [329.63, 246.94, 196.00, 146.83, 110.00, 73.42],  // Drop D (low E to D)
+            openG: [329.63, 246.94, 196.00, 146.83, 98.00, 82.41]    // Open G (A to G)
+        };
+        
+        // Note names by tuning
+        const NOTE_NAMES = {
+            standard: ['E4', 'B3', 'G3', 'D3', 'A2', 'E2'],
+            dropD: ['E4', 'B3', 'G3', 'D3', 'A2', 'D2'],
+            openG: ['E4', 'B3', 'G3', 'D3', 'G2', 'E2']
+        };
+        
+        // Initialize AudioContext when user interacts
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        // Play a note
+        function playNote(frequency) {
+            if (!audioContext) initAudio();
+            
+            // Create oscillator
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = 'triangle'; // More guitar-like sound
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            
+            // Create gain node for envelope
+            const gainNode = audioContext.createGain();
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.8, audioContext.currentTime + 0.01);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 2);
+            
+            // Connect nodes
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Start and stop
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+        
+        // Get all strings
+        const strings = document.querySelectorAll('.string');
+        const currentNoteElement = document.querySelector('.current-note');
+        const noteInfoElement = document.querySelector('.note-info');
+        
+        // Add click event listeners to strings
+        strings.forEach((string, index) => {
+            string.addEventListener('click', () => {
+                // Get current tuning frequencies
+                const frequencies = TUNINGS[currentTuning];
+                const notes = NOTE_NAMES[currentTuning];
+                
+                // Play the note
+                playNote(frequencies[index]);
+                
+                // Add plucked animation
+                string.querySelector('.string-line').classList.add('plucked');
+                setTimeout(() => {
+                    string.querySelector('.string-line').classList.remove('plucked');
+                }, 300);
+                
+                // Update UI
+                currentNoteElement.textContent = notes[index];
+                noteInfoElement.textContent = `String ${index + 1} - ${notes[index]}`;
+            });
+        });
+        
+        // Tuning control buttons
+        const standardTuningBtn = document.getElementById('standard-tuning');
+        const dropDTuningBtn = document.getElementById('drop-d-tuning');
+        const openGTuningBtn = document.getElementById('open-g-tuning');
+        const showChordsBtn = document.getElementById('show-chords');
+        
+        // Set active class for current tuning
+        function setActiveTuning(tuning) {
+            standardTuningBtn.classList.remove('active');
+            dropDTuningBtn.classList.remove('active');
+            openGTuningBtn.classList.remove('active');
+            
+            if (tuning === 'standard') {
+                standardTuningBtn.classList.add('active');
+            } else if (tuning === 'dropD') {
+                dropDTuningBtn.classList.add('active');
+            } else if (tuning === 'openG') {
+                openGTuningBtn.classList.add('active');
+            }
+        }
+        
+        // Change tuning
+        standardTuningBtn.addEventListener('click', () => {
+            currentTuning = 'standard';
+            setActiveTuning(currentTuning);
+            updateStringLabels();
+            noteInfoElement.textContent = 'Changed to Standard Tuning (E A D G B E)';
+        });
+        
+        dropDTuningBtn.addEventListener('click', () => {
+            currentTuning = 'dropD';
+            setActiveTuning(currentTuning);
+            updateStringLabels();
+            noteInfoElement.textContent = 'Changed to Drop D Tuning (D A D G B E)';
+        });
+        
+        openGTuningBtn.addEventListener('click', () => {
+            currentTuning = 'openG';
+            setActiveTuning(currentTuning);
+            updateStringLabels();
+            noteInfoElement.textContent = 'Changed to Open G Tuning (E B G D G E)';
+        });
+        
+        // Update string labels based on tuning
+        function updateStringLabels() {
+            const notes = NOTE_NAMES[currentTuning];
+            const labelElements = document.querySelectorAll('.string-label');
+            
+            labelElements.forEach((label, index) => {
+                label.textContent = notes[index].charAt(0);
+            });
+            
+            // Update data attributes for strings
+            strings.forEach((string, index) => {
+                string.setAttribute('data-note', notes[index].charAt(0));
+            });
+        }
+        
+        // Show chord helper
+        showChordsBtn.addEventListener('click', () => {
+            alert("Chord Helper feature coming soon!");
+        });
+        
+        // Set default tuning
+        setActiveTuning('standard');
+        
+        // Initialize UI with click anywhere to start
+        document.body.addEventListener('click', initAudio, { once: true });
+    });
+</script>
+</body>
+</html>
